@@ -1,6 +1,7 @@
 name: radio_kpop_brasil
-description: Rádio K-POP Brasil ao vivo
+description: Rádio K-POP Brasil
 publish_to: 'none'
+version: 1.0.0+1
 
 environment:
   sdk: '>=3.0.0 <4.0.0'
