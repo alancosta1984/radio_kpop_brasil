@@ -1,14 +1,17 @@
-name: Build iOS IPA
+name: Build iOS
 
 on:
-  workflow_dispatch:
+  push:
+    branches:
+      - main
+  pull_request:
 
 jobs:
-  build_ios:
+  build-ios:
     runs-on: macos-latest
 
     steps:
-      - name: Checkout repo
+      - name: Checkout code
         uses: actions/checkout@v3
 
       - name: Set up Flutter
@@ -16,29 +19,26 @@ jobs:
         with:
           flutter-version: '3.19.6'
 
-      - name: Install dependencies
+      - name: Install CocoaPods
+        run: sudo gem install cocoapods
+
+      - name: Get Flutter dependencies
         run: flutter pub get
 
-      - name: Clean build
+      - name: Clean Flutter project
         run: flutter clean
 
-      - name: Prebuild iOS to generate podhelper.rb
+      - name: Adjust Podfile to load podhelper.rb only if exists
+        run: |
+          sed -i.bak -E "s|load File.join\\(flutter_application_path, '.dart_tool', 'flutter_build', 'ios', 'podhelper.rb'\\)|podhelper_path = File.join(flutter_application_path, '.dart_tool', 'flutter_build', 'ios', 'podhelper.rb'); load podhelper_path if File.exist?(podhelper_path)|" ios/Podfile
+
+      - name: Build iOS to generate podhelper.rb
         run: flutter build ios --release --no-codesign
 
-      - name: Remove broken test target from Podfile
-        run: |
-          sed -i.bak '/RunnerTests/d' ios/Podfile
-
-      - name: Install CocoaPods
+      - name: Install CocoaPods dependencies
         run: |
           cd ios
           pod install
 
       - name: Build IPA
         run: flutter build ipa --release --no-codesign
-
-      - name: Upload IPA artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: app-release
-          path: build/ios/ipa/*.ipa
