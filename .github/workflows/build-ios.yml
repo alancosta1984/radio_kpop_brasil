@@ -26,6 +26,9 @@ jobs:
       - name: Precache iOS artifacts
         run: flutter precache --ios
 
+      - name: Delete old Podfile (force Flutter to regenerate)
+        run: rm -f ios/Podfile
+
       - name: Build IPA
         run: |
           flutter build ipa \
