@@ -15,25 +15,28 @@ jobs:
         uses: subosito/flutter-action@v2
         with:
           flutter-version: '3.19.6'
-          channel: stable
 
-      - name: Enable Flutter for iOS
-        run: flutter config --enable-ios
-
-      - name: Install Flutter dependencies
+      - name: Install dependencies
         run: flutter pub get
 
-      - name: Precache iOS artifacts
-        run: flutter precache --ios
+      - name: Replace broken Podfile
+        run: |
+          cat > ios/Podfile <<EOF
+          platform :ios, '12.0'
 
-      - name: Delete old Podfile (force Flutter to regenerate)
-        run: rm -f ios/Podfile
+          use_frameworks!
+          use_modular_headers!
+
+          flutter_application_path = File.expand_path('../..', __FILE__)
+          load File.join(flutter_application_path, '.dart_tool', 'flutter_build', 'ios', 'podhelper.rb')
+
+          target 'Runner' do
+            install_all_flutter_pods(flutter_application_path)
+          end
+          EOF
 
       - name: Build IPA
-        run: |
-          flutter build ipa \
-            --release \
-            --no-codesign
+        run: flutter build ipa --release --no-codesign
 
       - name: Upload IPA artifact
         uses: actions/upload-artifact@v4
