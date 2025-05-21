@@ -2,23 +2,12 @@
 
 platform :ios, '12.0'
 
-ENV['COCOAPODS_DISABLE_STATS'] = 'true'
-
-project 'Runner', {
-  'Debug' => :debug,
-  'Profile' => :release,
-  'Release' => :release,
-}
-
-def flutter_installation
-  install_all_flutter_pods(File.dirname(File.realpath(__FILE__)))
-end
+ENV['FLUTTER_ROOT'] ||= File.expand_path('../flutter', __FILE__)
+require File.expand_path(File.join('packages', 'flutter_tools', 'bin', 'podhelper'), __dir__)
 
 target 'Runner' do
   use_frameworks!
   use_modular_headers!
 
-  flutter_installation
-
-  # Adicione outros pods aqui se necessário
+  flutter_install_all_ios_pods File.dirname(File.realpath(__FILE__))
 end
