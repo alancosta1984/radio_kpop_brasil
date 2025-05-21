@@ -14,10 +14,17 @@ jobs:
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.19.6' # ou a versão compatível com seu projeto
+          flutter-version: '3.19.6'
+          channel: stable
 
-      - name: Install dependencies
+      - name: Enable Flutter for iOS
+        run: flutter config --enable-ios
+
+      - name: Install Flutter dependencies
         run: flutter pub get
+
+      - name: Precache iOS artifacts
+        run: flutter precache --ios
 
       - name: Build IPA
         run: |
