@@ -1,0 +1,17 @@
+name: radio_kpop_brasil
+description: Rádio K-POP Brasil ao vivo
+publish_to: 'none'
+
+environment:
+  sdk: '>=3.0.0 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  just_audio: ^0.9.35
+  audio_session: ^0.1.10
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/logo.png
