@@ -9,7 +9,6 @@ on:
 jobs:
   build-ios:
     runs-on: macos-latest
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -19,29 +18,28 @@ jobs:
         with:
           flutter-version: '3.19.6'
 
-      - name: Get Flutter dependencies
+      - name: Flutter pub get
         run: flutter pub get
 
-      - name: Pre-cache Flutter (inclui engine iOS)
+      - name: Flutter clean
+        run: flutter clean
+
+      - name: Flutter precache (inclui iOS)
         run: flutter precache --ios
 
       - name: Install CocoaPods
-        run: sudo gem install cocoapods
+        run: |
+          sudo gem install cocoapods
+          pod repo update
 
-      # ⚠️ Esse comando vai gerar o podhelper.rb SEM compilar ainda
-      - name: Ensure podhelper.rb exists
-        run: flutter build ios --no-codesign --simulator
-
-      # ✅ Ajusta Podfile para evitar erro se podhelper.rb não existir
-      - name: Adjust Podfile to load podhelper.rb only if exists
+      - name: Adjust Podfile to avoid podhelper.rb errors
         run: |
           sed -i.bak -E "s|load File.join\\(flutter_application_path, '.dart_tool', 'flutter_build', 'ios', 'podhelper.rb'\\)|podhelper_path = File.join(flutter_application_path, '.dart_tool', 'flutter_build', 'ios', 'podhelper.rb'); load podhelper_path if File.exist?(podhelper_path)|" ios/Podfile
 
-      - name: Install CocoaPods dependencies
+      - name: Pod install
         run: |
           cd ios
           pod install
 
-      # ✅ Só agora você compila para produção
-      - name: Build IPA
+      - name: Build IPA (sem assinatura)
         run: flutter build ipa --release --no-codesign
