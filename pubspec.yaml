@@ -10,7 +10,7 @@ dependencies:
   flutter:
     sdk: flutter
   just_audio: ^0.9.35
-  audio_session: ^0.1.10
+  audio_session: ^0.1.21
 
 flutter:
   uses-material-design: true

@@ -9,50 +9,40 @@ on:
 jobs:
   build-ios:
     runs-on: macos-latest
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
+
+      - name: Clean Flutter project
+        run: flutter clean
 
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
           flutter-version: '3.19.6'
 
-      - name: pub Update
-        run: flutter pub upgrade --major-versions
+      - name: Pre-cache Flutter (inclui engine iOS)
+        run: flutter precache
 
-      - name: Install dependencies
+      - name: Get Flutter dependencies
         run: flutter pub get
 
-      - name: Clean project
-        run: flutter clean
+      - name: Install CocoaPods
+        run: sudo gem install cocoapods -v 1.12.1
 
-      - name: Precache Flutter for iOS
-        run: flutter precache --ios
+      - name: Build iOS to generate podhelper.rb
+        run: flutter build ios --release --no-codesign
 
-      - name: Install CocoaPods dependencies
-        run: |
-          sudo gem install cocoapods
-          pod repo update
-
-      - name: Fix Podfile for compatibility
+      - name: Ajusta Podfile para carregar podhelper.rb se existir
         run: |
           sed -i.bak -E "s|load File.join\\(flutter_application_path, '.dart_tool', 'flutter_build', 'ios', 'podhelper.rb'\\)|podhelper_path = File.join(flutter_application_path, '.dart_tool', 'flutter_build', 'ios', 'podhelper.rb'); load podhelper_path if File.exist?(podhelper_path)|" ios/Podfile
 
-      - name: Install pods
+      - name: CocoaPods clean + install
         run: |
           cd ios
           pod deintegrate
-          pod install --verbose
+          pod install --repo-update
 
-      - name: Check if audio_session exists
-        run: |
-          if grep -q "audio_session" pubspec.yaml; then
-            echo "audio_session encontrado, prosseguindo..."
-          else
-            echo "Erro: audio_session não encontrado no pubspec.yaml"
-            exit 1
-          fi
-
-      - name: Build IPA (sem assinatura)
+      - name: Build IPA
         run: flutter build ipa --release --no-codesign
