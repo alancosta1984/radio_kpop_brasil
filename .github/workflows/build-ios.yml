@@ -9,6 +9,7 @@ on:
 jobs:
   build-ios:
     runs-on: macos-latest
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -18,41 +19,29 @@ jobs:
         with:
           flutter-version: '3.19.6'
 
-      - name: pub Update
-        run: flutter pub upgrade --major-versions
-
-      - name: Install dependencies
-        run: flutter pub get
-
-      - name: Clean project
+      - name: Clean Flutter project
         run: flutter clean
 
-      - name: Precache Flutter for iOS
-        run: flutter precache --ios
+      - name: Get Flutter dependencies
+        run: flutter pub get
 
-      - name: Install CocoaPods dependencies
-        run: |
-          sudo gem install cocoapods
-          pod repo update
+      - name: Pre-cache Flutter (inclui engine iOS)
+        run: flutter precache
 
-      - name: Fix Podfile for compatibility
+      - name: Install CocoaPods
+        run: sudo gem install cocoapods
+
+      - name: Adjust Podfile to load podhelper.rb only if it exists
         run: |
           sed -i.bak -E "s|load File.join\\(flutter_application_path, '.dart_tool', 'flutter_build', 'ios', 'podhelper.rb'\\)|podhelper_path = File.join(flutter_application_path, '.dart_tool', 'flutter_build', 'ios', 'podhelper.rb'); load podhelper_path if File.exist?(podhelper_path)|" ios/Podfile
 
-      - name: Install pods
+      - name: Build iOS to generate podhelper.rb
+        run: flutter build ios --release --no-codesign
+
+      - name: Install CocoaPods dependencies
         run: |
           cd ios
-          pod deintegrate
-          pod install --verbose
+          pod install
 
-      - name: Check if audio_session exists
-        run: |
-          if grep -q "audio_session" pubspec.yaml; then
-            echo "audio_session encontrado, prosseguindo..."
-          else
-            echo "Erro: audio_session não encontrado no pubspec.yaml"
-            exit 1
-          fi
-
-      - name: Build IPA (sem assinatura)
+      - name: Build IPA
         run: flutter build ipa --release --no-codesign
