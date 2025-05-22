@@ -18,14 +18,17 @@ jobs:
         with:
           flutter-version: '3.19.6'
 
-      - name: Install dependencies
-        run: flutter pub get
-
       - name: Clean project
         run: flutter clean
 
+      - name: Install dependencies
+        run: flutter pub get
+
       - name: Precache Flutter for iOS
         run: flutter precache --ios
+
+      - name: BUILD IOS
+        run: flutter build ios
 
       - name: Install CocoaPods dependencies
         run: |
