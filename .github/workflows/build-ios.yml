@@ -18,17 +18,17 @@ jobs:
         with:
           flutter-version: '3.19.6'
 
-      - name: Clean project
-        run: flutter clean
+      - name: pub Update
+        run: flutter pub upgrade --major-versions
 
       - name: Install dependencies
         run: flutter pub get
 
+      - name: Clean project
+        run: flutter clean
+
       - name: Precache Flutter for iOS
         run: flutter precache --ios
-
-      - name: BUILD IOS
-        run: flutter build ios
 
       - name: Install CocoaPods dependencies
         run: |
@@ -42,6 +42,7 @@ jobs:
       - name: Install pods
         run: |
           cd ios
+          pod deintegrate
           pod install --verbose
 
       - name: Check if audio_session exists
