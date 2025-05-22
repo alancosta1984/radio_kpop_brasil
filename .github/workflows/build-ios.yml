@@ -18,28 +18,37 @@ jobs:
         with:
           flutter-version: '3.19.6'
 
-      - name: Flutter pub get
+      - name: Install dependencies
         run: flutter pub get
 
-      - name: Flutter clean
+      - name: Clean project
         run: flutter clean
 
-      - name: Flutter precache (inclui iOS)
+      - name: Precache Flutter for iOS
         run: flutter precache --ios
 
-      - name: Install CocoaPods
+      - name: Install CocoaPods dependencies
         run: |
           sudo gem install cocoapods
           pod repo update
 
-      - name: Adjust Podfile to avoid podhelper.rb errors
+      - name: Fix Podfile for compatibility
         run: |
           sed -i.bak -E "s|load File.join\\(flutter_application_path, '.dart_tool', 'flutter_build', 'ios', 'podhelper.rb'\\)|podhelper_path = File.join(flutter_application_path, '.dart_tool', 'flutter_build', 'ios', 'podhelper.rb'); load podhelper_path if File.exist?(podhelper_path)|" ios/Podfile
 
-      - name: Pod install
+      - name: Install pods
         run: |
           cd ios
-          pod install
+          pod install --verbose
+
+      - name: Check if audio_session exists
+        run: |
+          if grep -q "audio_session" pubspec.yaml; then
+            echo "audio_session encontrado, prosseguindo..."
+          else
+            echo "Erro: audio_session não encontrado no pubspec.yaml"
+            exit 1
+          fi
 
       - name: Build IPA (sem assinatura)
         run: flutter build ipa --release --no-codesign
