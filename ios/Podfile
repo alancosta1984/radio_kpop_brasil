@@ -1,33 +1,20 @@
 platform :ios, '12.0'
 
 flutter_application_path = File.expand_path('..', __dir__)
-podhelper_path = File.join(flutter_application_path, '.dart_tool', 'flutter_build', 'ios', 'podhelper.rb')
-
-if File.exist?(podhelper_path)
-  load podhelper_path
-else
-  puts "⚠️ Warning: podhelper.rb not found at #{podhelper_path}"
-end
+load File.join(flutter_application_path, '.dart_tool', 'flutter_build', 'ios', 'podhelper.rb')
 
 target 'Runner' do
   use_frameworks!
   use_modular_headers!
 
-  if defined?(flutter_install_all_ios_pods)
-    flutter_install_all_ios_pods(flutter_application_path)
-  else
-    puts "⚠️ Warning: flutter_install_all_ios_pods is undefined. Skipping Flutter pod install."
-  end
+  flutter_install_all_ios_pods(flutter_application_path)
 end
 
 post_install do |installer|
   installer.pods_project.targets.each do |target|
     target.build_configurations.each do |config|
       config.build_settings['EXCLUDED_ARCHS[sdk=iphonesimulator*]'] = 'arm64'
-    end
-        # Garantir que todos os pods usem frameworks
-        target.build_configurations.each do |config|
-          config.build_settings['BUILD_LIBRARY_FOR_DISTRIBUTION'] = 'YES'
+      config.build_settings['BUILD_LIBRARY_FOR_DISTRIBUTION'] = 'YES'
     end
   end
 end

@@ -1,10 +1,7 @@
 name: Build iOS
 
 on:
-  push:
-    branches:
-      - main
-  pull_request:
+  workflow_dispatch:
 
 jobs:
   build-ios:
@@ -22,32 +19,22 @@ jobs:
       - name: Flutter clean
         run: flutter clean
 
-      - name: Flutter pub get
+      - name: Get dependencies
         run: flutter pub get
 
-      - name: Flutter build ios (to generate podhelper.rb)
+      - name: Build iOS to generate podhelper.rb
         run: flutter build ios --release --no-codesign
 
-      - name: Verify plugins generated
-        run: |
-          ls -l .flutter-plugins
-          ls -l .dart_tool/flutter_build/ios
-
-      - name: Verify podhelper.rb exists
-        run: |
-          if [ ! -f ".dart_tool/flutter_build/ios/podhelper.rb" ]; then
-            echo "❌ podhelper.rb not found!"
-            exit 1
-          fi
-
-      - name: Adjust Podfile
-        run: |
-          sed -i.bak -E "s|load File.join\\(flutter_application_path, '.dart_tool', 'flutter_build', 'ios', 'podhelper.rb'\\)|podhelper_path = File.join(flutter_application_path, '.dart_tool', 'flutter_build', 'ios', 'podhelper.rb'); load podhelper_path if File.exist?(podhelper_path)|" ios/Podfile
-
-      - name: Install CocoaPods
+      - name: Install CocoaPods dependencies
         run: |
           cd ios
           pod install
 
-      - name: Build IPA
+      - name: Build IPA (unsigned)
         run: flutter build ipa --release --no-codesign
+
+      - name: Upload IPA artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-release
+          path: build/ios/ipa/*.ipa
