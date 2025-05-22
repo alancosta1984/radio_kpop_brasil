@@ -25,13 +25,13 @@ jobs:
       - name: Flutter pub get
         run: flutter pub get
 
+      - name: Flutter build ios (to generate podhelper.rb)
+        run: flutter build ios --release --no-codesign
+
       - name: Verify plugins generated
         run: |
           ls -l .flutter-plugins
           ls -l .dart_tool/flutter_build/ios
-
-      - name: Flutter build ios (to generate podhelper.rb)
-        run: flutter build ios --release --no-codesign
 
       - name: Verify podhelper.rb exists
         run: |
