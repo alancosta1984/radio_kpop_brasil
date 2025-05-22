@@ -4,13 +4,13 @@ publish_to: 'none'
 version: 1.0.0+1
 
 environment:
-  sdk: '>=3.0.0 <4.0.0'
+  sdk: '>3.3.4'
 
 dependencies:
   flutter:
     sdk: flutter
-  just_audio: ^0.9.35
-  audio_session: ^0.1.25
+  just_audio: ^0.10.3
+  audio_session: ^0.2.2
 
 flutter:
   uses-material-design: true
