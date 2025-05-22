@@ -25,6 +25,14 @@ jobs:
       - name: Pre-cache iOS engine
         run: flutter precache --ios
 
+      - name: Install CocoaPods dependencies
+        run: |
+          sudo gem install cocoapods
+          pod repo update
+
+      - name: Check Flutter dependencies
+        run: flutter pub deps | grep audio_session
+
       - name: Build iOS (generates podhelper.rb)
         run: flutter build ios --release --no-codesign
 
