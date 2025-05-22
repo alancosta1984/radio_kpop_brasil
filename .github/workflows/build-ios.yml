@@ -19,11 +19,17 @@ jobs:
         with:
           flutter-version: '3.19.6'
 
+      - name: Get Flutter dependencies
+        run: flutter pub get
+
+      - name: Pre-cache Flutter (inclui engine iOS)
+        run: flutter precache
+
       - name: Install CocoaPods
         run: sudo gem install cocoapods
 
-      - name: Get Flutter dependencies
-        run: flutter pub get
+      - name: Build iOS to generate podhelper.rb
+        run: flutter build ios --release --no-codesign
 
       - name: Clean Flutter project
         run: flutter clean
@@ -31,9 +37,6 @@ jobs:
       - name: Adjust Podfile to load podhelper.rb only if exists
         run: |
           sed -i.bak -E "s|load File.join\\(flutter_application_path, '.dart_tool', 'flutter_build', 'ios', 'podhelper.rb'\\)|podhelper_path = File.join(flutter_application_path, '.dart_tool', 'flutter_build', 'ios', 'podhelper.rb'); load podhelper_path if File.exist?(podhelper_path)|" ios/Podfile
-
-      - name: Build iOS to generate podhelper.rb
-        run: flutter build ios --release --no-codesign
 
       - name: Install CocoaPods dependencies
         run: |

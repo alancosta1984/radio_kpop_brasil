@@ -6,17 +6,17 @@ podhelper_path = File.join(flutter_application_path, '.dart_tool', 'flutter_buil
 if File.exist?(podhelper_path)
   load podhelper_path
 else
-  puts "warning: podhelper.rb not found at #{podhelper_path}"
+  puts "⚠️ Warning: podhelper.rb not found at #{podhelper_path}"
 end
 
 target 'Runner' do
   use_frameworks!
   use_modular_headers!
 
-  flutter_install_all_ios_pods(flutter_application_path)
-
-  target 'RunnerTests' do
-    inherit! :search_paths
+  if defined?(flutter_install_all_ios_pods)
+    flutter_install_all_ios_pods(flutter_application_path)
+  else
+    puts "⚠️ Warning: flutter_install_all_ios_pods is undefined. Skipping Flutter pod install."
   end
 end
 
