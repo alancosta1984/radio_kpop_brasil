@@ -23,22 +23,34 @@ jobs:
         run: flutter pub get
 
       - name: Pre-cache Flutter (inclui engine iOS)
-        run: flutter precache
+        run: flutter precache --ios
 
       - name: Install CocoaPods
         run: sudo gem install cocoapods
 
+      # ⚠️ Gera o podhelper.rb e estrutura necessária
+      - name: Build iOS to generate podhelper.rb
+        run: flutter build ios --release --no-codesign
+
+      # ⚠️ Agora limpa (sem apagar o que já foi gerado)
+      - name: Clean Flutter project
+        run: flutter clean
+
+      # ✅ Ajusta Podfile para evitar erro com podhelper.rb ausente
       - name: Adjust Podfile to load podhelper.rb only if exists
         run: |
           sed -i.bak -E "s|load File.join\\(flutter_application_path, '.dart_tool', 'flutter_build', 'ios', 'podhelper.rb'\\)|podhelper_path = File.join(flutter_application_path, '.dart_tool', 'flutter_build', 'ios', 'podhelper.rb'); load podhelper_path if File.exist?(podhelper_path)|" ios/Podfile
 
-      - name: Build iOS to generate podhelper.rb
-        run: flutter build ios --release --no-codesign
+      # ⚠️ Roda pub get de novo para garantir consistência depois do clean
+      - name: Get Flutter dependencies again
+        run: flutter pub get
 
+      # ✅ Instala os Pods corretamente
       - name: Install CocoaPods dependencies
         run: |
           cd ios
           pod install
 
+      # ✅ Gera o IPA final
       - name: Build IPA
         run: flutter build ipa --release --no-codesign
