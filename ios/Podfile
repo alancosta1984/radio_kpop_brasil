@@ -13,7 +13,12 @@ target 'Runner' do
   use_frameworks!
   use_modular_headers!
 
-  flutter_install_all_ios_pods(flutter_application_path)
+  # Removendo a chamada para flutter_install_all_ios_pods
+  if File.exist?(podhelper_path)
+    flutter_install_all_ios_pods(flutter_application_path)
+  else
+    puts "⚠️ Warning: flutter_install_all_ios_pods not executed due to missing podhelper.rb."
+  end
 end
 
 post_install do |installer|
