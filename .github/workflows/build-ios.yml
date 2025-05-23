@@ -28,7 +28,6 @@ jobs:
         run: |
           rm -rf ios/Pods
           rm -rf ios/.symlinks
-          rm -rf ios/Flutter
           rm -rf ios/Podfile.lock
           rm -rf ~/.pub-cache
           rm -rf .dart_tool
