@@ -16,32 +16,22 @@ jobs:
         with:
           flutter-version: '3.32.0'
 
-      - name: Verify Flutter & Dart versions
-        run: |
-          flutter --version
-          dart --version
+      - name: Show Flutter version
+        run: flutter --version
 
-      - name: Flutter clean
+      - name: Clean Flutter project
         run: flutter clean
 
       - name: Get dependencies
         run: flutter pub get
 
-      - name: Pre-cache iOS engine
+      - name: Precache iOS engine
         run: flutter precache --ios
 
-      - name: Install CocoaPods dependencies
-        run: |
-          sudo gem install cocoapods
-          pod repo update
-
-      - name: Check Flutter dependencies
-        run: flutter pub deps | grep audio_session
-
-      - name: Build iOS (generates podhelper.rb)
+      - name: Build iOS (to generate podhelper.rb)
         run: flutter build ios --release --no-codesign
 
-      - name: Check if podhelper.rb exists
+      - name: Confirm podhelper.rb was generated
         run: |
           if [ -f .dart_tool/flutter_build/ios/podhelper.rb ]; then
             echo "✅ podhelper.rb encontrado!"
@@ -56,6 +46,15 @@ jobs:
           pod deintegrate
           rm -rf Pods Podfile.lock
           pod install --verbose
+
+      - name: Confirm audio_session está no Podfile.lock
+        run: |
+          if grep -q "audio_session" ios/Podfile.lock; then
+            echo "✅ audio_session instalado via CocoaPods"
+          else
+            echo "❌ ERRO: audio_session não está no Podfile.lock"
+            exit 1
+          fi
 
       - name: Build IPA (unsigned)
         run: flutter build ipa --release --no-codesign
