@@ -6,12 +6,6 @@
 
 #import "GeneratedPluginRegistrant.h"
 
-#if __has_include(<audio_session/AudioSessionPlugin.h>)
-#import <audio_session/AudioSessionPlugin.h>
-#else
-#@import audio_session;
-#endif
-
 #if __has_include(<just_audio/JustAudioPlugin.h>)
 #import <just_audio/JustAudioPlugin.h>
 #else
