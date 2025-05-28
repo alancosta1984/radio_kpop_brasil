@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:just_audio/just_audio.dart';
+import 'package:audioplayers/audioplayers.dart';
 
 void main() {
   runApp(const RadioApp());
@@ -26,26 +26,16 @@ class RadioHomePage extends StatefulWidget {
 }
 
 class _RadioHomePageState extends State<RadioHomePage> {
-  final player = AudioPlayer();
+  final AudioPlayer _player = AudioPlayer();
   bool isPlaying = false;
 
   final String streamUrl = 'https://server.dacsolution.com.br/shoutcast3/listen.mp3';
 
-  @override
-  void initState() {
-    super.initState();
-    setupPlayer();
-  }
-
-  Future<void> setupPlayer() async {
-    await player.setUrl(streamUrl);
-  }
-
-  void togglePlayPause() {
+  void togglePlayPause() async {
     if (isPlaying) {
-      player.pause();
+      await _player.pause();
     } else {
-      player.play();
+      await _player.play(UrlSource(streamUrl));
     }
     setState(() {
       isPlaying = !isPlaying;
@@ -54,7 +44,7 @@ class _RadioHomePageState extends State<RadioHomePage> {
 
   @override
   void dispose() {
-    player.dispose();
+    _player.dispose();
     super.dispose();
   }
 
