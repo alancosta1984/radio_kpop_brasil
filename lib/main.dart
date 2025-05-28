@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
-import 'package:audio_session/audio_session.dart';
 
 void main() {
   runApp(const RadioApp());
@@ -39,8 +38,6 @@ class _RadioHomePageState extends State<RadioHomePage> {
   }
 
   Future<void> setupPlayer() async {
-    final session = await AudioSession.instance;
-    await session.configure(const AudioSessionConfiguration.music());
     await player.setUrl(streamUrl);
   }
 

@@ -16,29 +16,21 @@ jobs:
         with:
           flutter-version: '3.32.0'
 
-      - name: Verify Flutter & Dart versions
-        run: |
-          flutter --version
-          dart --version
-
-      - name: Flutter clean
-        run: flutter clean
-
-      - name: Delete iOS build and pod cache manually
+      - name: Delete previous iOS pods and build data
         run: |
           rm -rf ios/Pods
           rm -rf ios/.symlinks
           rm -rf ios/Podfile.lock
-          rm -rf ~/.pub-cache
           rm -rf .dart_tool
+          rm -rf build
 
       - name: Get dependencies
         run: flutter pub get
 
-      - name: Pre-cache iOS engine
+      - name: Precache iOS
         run: flutter precache --ios
 
-      - name: Build iOS (generates podhelper.rb)
+      - name: Build iOS (generate podhelper.rb)
         run: flutter build ios --release --no-codesign
 
       - name: Check if podhelper.rb exists
@@ -50,14 +42,12 @@ jobs:
             exit 1
           fi
 
-      - name: Install CocoaPods dependencies
+      - name: Install CocoaPods
         run: |
           cd ios
-          pod deintegrate
-          rm -rf Pods Podfile.lock
-          pod install --verbose
+          pod install
 
-      - name: Build IPA (unsigned)
+      - name: Build IPA
         run: flutter build ipa --release --no-codesign
 
       - name: Upload IPA
