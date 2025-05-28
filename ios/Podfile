@@ -1,10 +1,23 @@
 platform :ios, '12.0'
 
+flutter_application_path = File.expand_path('..', __dir__)
+podhelper_path = File.join(flutter_application_path, '.ios', 'Flutter', 'podhelper.rb')
+
+if File.exist?(podhelper_path)
+  load podhelper_path
+else
+  puts "⚠️ Warning: podhelper.rb not found, skipping pod install configuration."
+end
+
 target 'Runner' do
   use_frameworks!
   use_modular_headers!
 
-  flutter_install_all_ios_pods(File.dirname(File.realpath(__FILE__)))
+  if File.exist?(podhelper_path)
+    flutter_install_all_ios_pods(flutter_application_path)
+  else
+    puts "⚠️ Warning: flutter_install_all_ios_pods not executed due to missing podhelper.rb."
+  end
 end
 
 post_install do |installer|
