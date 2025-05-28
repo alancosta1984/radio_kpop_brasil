@@ -1,14 +1,21 @@
 platform :ios, '11.0'
 
-# Caminho absoluto do Flutter
 flutter_application_path = File.expand_path('..', __dir__)
-load File.join(flutter_application_path, '.ios', 'Flutter', 'podhelper.rb')
+podhelper_path = File.join(flutter_application_path, '.ios', 'Flutter', 'podhelper.rb')
+
+if File.exist?(podhelper_path)
+  load podhelper_path
+else
+  puts "⚠️ Warning: podhelper.rb not found, skipping Flutter pod install"
+end
 
 target 'Runner' do
   use_frameworks!
   use_modular_headers!
 
-  flutter_install_all_ios_pods(flutter_application_path)
+  if File.exist?(podhelper_path)
+    flutter_install_all_ios_pods(flutter_application_path)
+  end
 end
 
 post_install do |installer|

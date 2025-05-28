@@ -30,6 +30,15 @@ jobs:
       - name: Generate iOS project (includes podhelper.rb)
         run: flutter build ios --release --no-codesign
 
+      - name: Verificar se podhelper.rb existe
+        run: |
+          if [ ! -f .ios/Flutter/podhelper.rb ]; then
+            echo "❌ ERRO: podhelper.rb NÃO gerado!"
+            exit 1
+          else
+            echo "✅ podhelper.rb existe."
+          fi
+
       - name: Install CocoaPods
         run: |
           cd ios
