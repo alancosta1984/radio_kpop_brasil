@@ -16,40 +16,23 @@ jobs:
         with:
           flutter-version: '3.32.0'
 
-      - name: Delete previous iOS pods and build data
-        run: |
-          rm -rf ios/Pods
-          rm -rf ios/.symlinks
-          rm -rf ios/Podfile.lock
-          rm -rf .dart_tool
-          rm -rf build
-          rm -rf ios/Flutter/Generated.xcconfig
-          rm -rf ios/Flutter/ephemeral
-
-      - name: Flutter clean and get deps
+      - name: Clean previous builds
         run: |
           flutter clean
-          flutter pub get
+          rm -rf ios/Pods ios/Podfile.lock .dart_tool build
 
-      - name: Precache iOS
+      - name: Get Flutter dependencies
+        run: flutter pub get
+
+      - name: Precache Flutter iOS engine
         run: flutter precache --ios
 
-      - name: Build iOS to generate podhelper.rb
+      - name: Generate iOS project (includes podhelper.rb)
         run: flutter build ios --release --no-codesign
 
-      - name: Check if podhelper.rb exists
-        run: |
-          if [ -f .ios/Flutter/podhelper.rb ]; then
-            echo "✅ podhelper.rb encontrado!"
-          else
-            echo "❌ ERRO: podhelper.rb não foi gerado!"
-            exit 1
-          fi
-
-      - name: CocoaPods install
+      - name: Install CocoaPods
         run: |
           cd ios
-          pod deintegrate
           pod install --verbose
 
       - name: Build IPA (unsigned)
