@@ -26,11 +26,6 @@ jobs:
           rm -rf ios/Flutter/Generated.xcconfig
           rm -rf ios/Flutter/ephemeral
 
-      - name: Forçar regeneração do GeneratedPluginRegistrant
-        run: |
-          rm -f ios/Runner/GeneratedPluginRegistrant.m
-          rm -f ios/Runner/GeneratedPluginRegistrant.h
-
       - name: Flutter clean and get deps
         run: |
           flutter clean
