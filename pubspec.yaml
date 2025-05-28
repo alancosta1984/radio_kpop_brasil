@@ -9,7 +9,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  audioplayers: ^5.2.1
+  audioplayers: ^5.2.1 # versão estável e compatível
 
 flutter:
   uses-material-design: true

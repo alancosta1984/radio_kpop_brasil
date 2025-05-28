@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:audioplayers/audioplayers.dart';
 
-void main() {
-  runApp(const RadioApp());
-}
+void main() => runApp(const RadioApp());
 
 class RadioApp extends StatelessWidget {
   const RadioApp({super.key});
@@ -26,25 +24,22 @@ class RadioHomePage extends StatefulWidget {
 }
 
 class _RadioHomePageState extends State<RadioHomePage> {
-  final AudioPlayer _player = AudioPlayer();
+  final player = AudioPlayer();
   bool isPlaying = false;
-
-  final String streamUrl = 'https://server.dacsolution.com.br/shoutcast3/listen.mp3';
+  final streamUrl = 'https://server.dacsolution.com.br/shoutcast3/listen.mp3';
 
   void togglePlayPause() async {
     if (isPlaying) {
-      await _player.pause();
+      await player.pause();
     } else {
-      await _player.play(UrlSource(streamUrl));
+      await player.play(UrlSource(streamUrl));
     }
-    setState(() {
-      isPlaying = !isPlaying;
-    });
+    setState(() => isPlaying = !isPlaying);
   }
 
   @override
   void dispose() {
-    _player.dispose();
+    player.dispose();
     super.dispose();
   }
 
