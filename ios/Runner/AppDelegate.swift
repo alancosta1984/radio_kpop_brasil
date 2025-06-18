@@ -1,6 +1,7 @@
 import UIKit
 import Flutter
 import AVFoundation
+import MediaPlayer
 
 @UIApplicationMain
 @objc class AppDelegate: FlutterAppDelegate {
