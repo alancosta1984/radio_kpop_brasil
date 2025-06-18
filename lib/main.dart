@@ -1,32 +1,43 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'models/radio_provider.dart';
+import 'screens/home_screen.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
-void main() => runApp(const RadioKpopApp());
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
 
-class RadioKpopApp extends StatelessWidget {
-  const RadioKpopApp({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return const MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: RadioHomePage(),
-    );
-  }
+  runApp(const RadioKPopBrasilApp());
 }
 
-class RadioHomePage extends StatelessWidget {
-  const RadioHomePage({super.key});
+class RadioKPopBrasilApp extends StatelessWidget {
+  const RadioKPopBrasilApp({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
-      body: SafeArea(
-        child: WebView(
-          initialUrl: 'assets/index.html',
-          javascriptMode: JavascriptMode.unrestricted,
+    return ChangeNotifierProvider(
+      create: (context) => RadioProvider(),
+      child: MaterialApp(
+        title: 'Radio K-POP Brasil',
+        debugShowCheckedModeBanner: false,
+        theme: ThemeData(
+          primarySwatch: Colors.purple,
+          fontFamily: 'Roboto',
+          visualDensity: VisualDensity.adaptivePlatformDensity,
+          appBarTheme: const AppBarTheme(
+            backgroundColor: Colors.transparent,
+            elevation: 0,
+            iconTheme: IconThemeData(color: Colors.white),
+            titleTextStyle: TextStyle(
+              color: Colors.white,
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
         ),
+        home: const HomeScreen(),
       ),
     );
   }
 }
+
