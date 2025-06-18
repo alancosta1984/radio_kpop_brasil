@@ -1,7 +1,5 @@
-package com.example.radio_kpop_brasil // Substitua pelo pacote correto do seu aplicativo
+package com.example.radio_kpop_brasil
 
 import io.flutter.embedding.android.FlutterActivity
 
-class MainActivity: FlutterActivity() {
-    // Não é necessário sobrescrever métodos para a configuração básica
-}
+class MainActivity: FlutterActivity()

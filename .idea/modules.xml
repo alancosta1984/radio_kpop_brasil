@@ -2,7 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/radio_kpop_brasil.iml" filepath="$PROJECT_DIR$/.idea/radio_kpop_brasil.iml" />
+      <module fileurl="file://$PROJECT_DIR$/radio_kpop_brasil.iml" filepath="$PROJECT_DIR$/radio_kpop_brasil.iml" />
+      <module fileurl="file://$PROJECT_DIR$/android/radio_kpop_brasil_android.iml" filepath="$PROJECT_DIR$/android/radio_kpop_brasil_android.iml" />
     </modules>
   </component>
 </project>

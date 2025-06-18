@@ -1,68 +1,42 @@
 import 'package:flutter/material.dart';
-import 'package:audioplayers/audioplayers.dart';
+import 'package:provider/provider.dart';
+import 'models/radio_provider.dart';
+import 'screens/home_screen.dart';
 
-void main() => runApp(const RadioApp());
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  
+  runApp(const RadioKPopBrasilApp());
+}
 
-class RadioApp extends StatelessWidget {
-  const RadioApp({super.key});
+class RadioKPopBrasilApp extends StatelessWidget {
+  const RadioKPopBrasilApp({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Radio K-POP Brasil',
-      theme: ThemeData.dark(),
-      home: const RadioHomePage(),
-    );
-  }
-}
-
-class RadioHomePage extends StatefulWidget {
-  const RadioHomePage({super.key});
-
-  @override
-  State<RadioHomePage> createState() => _RadioHomePageState();
-}
-
-class _RadioHomePageState extends State<RadioHomePage> {
-  final player = AudioPlayer();
-  bool isPlaying = false;
-  final streamUrl = 'https://server.dacsolution.com.br/shoutcast3/listen.mp3';
-
-  void togglePlayPause() async {
-    if (isPlaying) {
-      await player.pause();
-    } else {
-      await player.play(UrlSource(streamUrl));
-    }
-    setState(() => isPlaying = !isPlaying);
-  }
-
-  @override
-  void dispose() {
-    player.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('Radio K-POP Brasil')),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Image.asset('assets/logo.png', height: 150),
-            const SizedBox(height: 40),
-            IconButton(
-              iconSize: 80,
-              icon: Icon(isPlaying ? Icons.pause_circle : Icons.play_circle),
-              onPressed: togglePlayPause,
+    return ChangeNotifierProvider(
+      create: (context) => RadioProvider(),
+      child: MaterialApp(
+        title: 'Radio K-POP Brasil',
+        debugShowCheckedModeBanner: false,
+        theme: ThemeData(
+          primarySwatch: Colors.purple,
+          fontFamily: 'Roboto',
+          visualDensity: VisualDensity.adaptivePlatformDensity,
+          appBarTheme: const AppBarTheme(
+            backgroundColor: Colors.transparent,
+            elevation: 0,
+            iconTheme: IconThemeData(color: Colors.white),
+            titleTextStyle: TextStyle(
+              color: Colors.white,
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
             ),
-            const SizedBox(height: 20),
-            const Text('Clique para ouvir ao vivo'),
-          ],
+          ),
         ),
+        home: const HomeScreen(),
       ),
     );
   }
 }
+
